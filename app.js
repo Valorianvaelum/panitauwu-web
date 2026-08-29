@@ -8,7 +8,7 @@
   const loveRain = document.querySelector('#loveRain');
 
   const LOVE_WORDS = ['te quiero', 'te amo'];
-  const MAX_PARTICLES = 38;
+  const MAX_PARTICLES = 28;
   let rainTimer = null;
   let burstTimer = null;
 
@@ -21,32 +21,62 @@
       - 2.15 * Math.cos(3 * t)
       - 0.95 * Math.cos(4 * t)
     );
-    return { x, y };
+    return { x: x * 1.1, y: y * 1.1 };
+  }
+
+  function sampleHeartByArcLength(count) {
+    const resolution = 720;
+    const dense = [];
+    let totalLength = 0;
+
+    for (let index = 0; index <= resolution; index += 1) {
+      const t = (index / resolution) * Math.PI * 2;
+      const point = pointOnHeart(t);
+      const previous = dense.at(-1);
+
+      if (previous) {
+        totalLength += Math.hypot(point.x - previous.x, point.y - previous.y);
+      }
+
+      dense.push({ ...point, length: totalLength });
+    }
+
+    const samples = [];
+    let cursor = 0;
+
+    for (let index = 0; index < count; index += 1) {
+      const target = (index / count) * totalLength;
+      while (cursor < dense.length - 1 && dense[cursor].length < target) cursor += 1;
+      samples.push(dense[cursor]);
+    }
+
+    return samples;
   }
 
   function buildPetalHeart() {
     if (!heartPetals) return;
 
-    const count = window.innerWidth < 520 ? 30 : 36;
+    const count = window.innerWidth < 520 ? 18 : 22;
+    const points = sampleHeartByArcLength(count);
     const fragment = document.createDocumentFragment();
 
-    for (let index = 0; index < count; index += 1) {
-      const t = (index / count) * Math.PI * 2;
-      const current = pointOnHeart(t);
-      const next = pointOnHeart(t + 0.02);
-      const tangent = Math.atan2(next.y - current.y, next.x - current.x) * (180 / Math.PI);
-      const variation = Math.sin(index * 2.17) * 8;
-      const scale = 0.73 + ((Math.sin(index * 1.71) + 1) / 2) * 0.28;
+    points.forEach((current, index) => {
+      const previous = points[(index - 1 + points.length) % points.length];
+      const next = points[(index + 1) % points.length];
+      const tangent = Math.atan2(next.y - previous.y, next.x - previous.x) * (180 / Math.PI);
+      const variation = Math.sin(index * 2.17) * 11;
+      const scale = 0.62 + ((Math.sin(index * 1.71) + 1) / 2) * 0.25;
+      const xScale = index % 4 === 0 ? -scale : scale;
 
       const petal = document.createElementNS(SVG_NS, 'use');
       petal.setAttribute('href', '#petalShape');
       petal.setAttribute(
         'transform',
-        `translate(${current.x.toFixed(2)} ${current.y.toFixed(2)}) rotate(${(tangent + 90 + variation).toFixed(2)}) scale(${scale.toFixed(3)})`,
+        `translate(${current.x.toFixed(2)} ${current.y.toFixed(2)}) rotate(${(tangent + 90 + variation).toFixed(2)}) scale(${xScale.toFixed(3)} ${scale.toFixed(3)})`,
       );
-      petal.style.opacity = String(0.82 + ((Math.cos(index * 1.4) + 1) / 2) * 0.18);
+      petal.style.opacity = String(0.78 + ((Math.cos(index * 1.4) + 1) / 2) * 0.18);
       fragment.appendChild(petal);
-    }
+    });
 
     heartPetals.replaceChildren(fragment);
   }
@@ -72,9 +102,9 @@
     const origin = centerOfFlower();
     const word = document.createElement('span');
     const choice = LOVE_WORDS[Math.floor(Math.random() * LOVE_WORDS.length)];
-    const size = 13 + Math.random() * (burst ? 11 : 8);
-    const xJitter = (Math.random() - 0.5) * 54;
-    const yJitter = (Math.random() - 0.5) * 30;
+    const size = 12 + Math.random() * (burst ? 8 : 6);
+    const xJitter = (Math.random() - 0.5) * 38;
+    const yJitter = (Math.random() - 0.5) * 20;
 
     word.className = 'love-word';
     word.textContent = choice;
@@ -96,11 +126,11 @@
       return;
     }
 
-    const drift = (Math.random() - 0.5) * (burst ? 290 : 230);
-    const rise = 58 + Math.random() * 105;
+    const drift = (Math.random() - 0.5) * (burst ? 360 : 300);
+    const rise = 90 + Math.random() * 110;
     const fall = window.innerHeight - origin.y + 120;
     const rotate = (Math.random() - 0.5) * 26;
-    const duration = (burst ? 3800 : 4700) + Math.random() * 1800;
+    const duration = (burst ? 4200 : 5200) + Math.random() * 1600;
 
     const animation = word.animate(
       [
@@ -134,12 +164,12 @@
 
   function startAmbientRain() {
     if (rainTimer) window.clearInterval(rainTimer);
-    const interval = reducedMotion.matches ? 2400 : 720;
+    const interval = reducedMotion.matches ? 2600 : 980;
 
     rainTimer = window.setInterval(() => {
       if (document.visibilityState !== 'visible') return;
       spawnLoveWord();
-      if (!reducedMotion.matches && Math.random() > 0.55) {
+      if (!reducedMotion.matches && Math.random() > 0.72) {
         window.setTimeout(() => spawnLoveWord(), 160 + Math.random() * 180);
       }
     }, interval);
@@ -153,9 +183,9 @@
     window.clearTimeout(burstTimer);
     burstTimer = window.setTimeout(() => loveHeart.classList.remove('is-bursting'), 720);
 
-    const count = reducedMotion.matches ? 5 : 22;
+    const count = reducedMotion.matches ? 4 : 14;
     for (let index = 0; index < count; index += 1) {
-      window.setTimeout(() => spawnLoveWord({ burst: true }), index * (reducedMotion.matches ? 100 : 52));
+      window.setTimeout(() => spawnLoveWord({ burst: true }), index * (reducedMotion.matches ? 120 : 72));
     }
   }
 
@@ -168,8 +198,8 @@
       startAmbientRain();
 
       if (!reducedMotion.matches) {
-        for (let index = 0; index < 8; index += 1) {
-          window.setTimeout(() => spawnLoveWord(), 500 + index * 190);
+        for (let index = 0; index < 5; index += 1) {
+          window.setTimeout(() => spawnLoveWord(), 600 + index * 260);
         }
       }
     }, delay);
