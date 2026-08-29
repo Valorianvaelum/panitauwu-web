@@ -13,7 +13,9 @@
       document.documentElement.classList.add('js');
     </script>
     <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./music.css" />
     <script src="./app.js" defer></script>
+    <script src="./music.js" defer></script>
   </head>
   <body>
     <div class="ambient" aria-hidden="true">
@@ -49,7 +51,7 @@
           class="love-heart"
           id="loveHeart"
           type="button"
-          aria-label="Hacer llover más te quiero y te amo"
+          aria-label="Hacer llover más te quiero y te amo y escuchar una canción"
           aria-describedby="flowerHint"
         >
           <svg
@@ -109,6 +111,17 @@
     </main>
 
     <div class="love-rain" id="loveRain" aria-hidden="true"></div>
+
+    <aside class="music-card" id="musicCard" hidden aria-label="Música para esta sorpresa">
+      <div class="music-card__top">
+        <div class="music-card__copy">
+          <p class="music-card__eyebrow">suena para vos</p>
+          <p class="music-card__status" id="musicStatus">1:20–2:00</p>
+        </div>
+        <button class="music-card__close" id="musicClose" type="button" aria-label="Detener música">×</button>
+      </div>
+      <div class="music-card__frame" id="musicFrame"></div>
+    </aside>
 
     <noscript>
       <p class="noscript">Esta flor necesita JavaScript para hacer llover los mensajes, pero el cariño sigue estando.</p>
