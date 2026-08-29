@@ -209,7 +209,7 @@ button {
 }
 
 .home__intro {
-  z-index: 2;
+  z-index: 14;
   width: min(100%, 39rem);
 }
 
@@ -232,12 +232,13 @@ button {
 
 .flower-stage {
   position: relative;
+  z-index: 10;
   align-self: center;
   justify-self: center;
   display: grid;
   place-items: center;
-  width: min(77vh, 76vw, 46rem);
-  width: min(77svh, 76vw, 46rem);
+  width: min(80vh, 78vw, 48rem);
+  width: min(80svh, 78vw, 48rem);
   aspect-ratio: 1;
   margin: clamp(-1rem, -2vh, 0rem) auto -0.3rem;
 }
@@ -257,7 +258,7 @@ button {
 
 .love-heart {
   position: relative;
-  z-index: 2;
+  z-index: 12;
   width: 92%;
   aspect-ratio: 1;
   padding: 0;
@@ -279,7 +280,7 @@ button {
   width: 100%;
   height: 100%;
   overflow: visible;
-  filter: drop-shadow(0 1.7rem 2rem rgba(10, 2, 7, 0.24));
+  filter: drop-shadow(0 1.25rem 1.8rem rgba(10, 2, 7, 0.22));
   transform-origin: center;
   animation: flowerFloat 5.4s ease-in-out infinite;
 }
@@ -288,6 +289,11 @@ button {
   fill: url(#petalRose);
   transform-box: fill-box;
   transform-origin: center;
+  filter: saturate(.94);
+}
+
+.heart-petals use:nth-child(2n) {
+  filter: saturate(.9) brightness(.98);
 }
 
 .heart-petals use:nth-child(3n) {
@@ -295,32 +301,14 @@ button {
 }
 
 .heart-petals use:nth-child(4n + 1) {
-  opacity: 0.94;
+  opacity: 0.92;
 }
 
-.rose__outer use,
-.rose__middle use,
-.rose__inner use {
-  fill: url(#roseCore);
-  stroke: rgba(255, 224, 232, 0.08);
-  stroke-width: 0.7;
-}
-
-.rose__outer,
-.rose__middle,
-.rose__inner {
+.rose-photo {
   transform-box: fill-box;
   transform-origin: center;
-}
-
-.rose {
-  transform: scale(1.16);
-  transform-box: fill-box;
-  transform-origin: center;
-}
-
-.rose__inner {
-  animation: breathe 3.8s ease-in-out infinite;
+  animation: roseBreathe 4.8s ease-in-out infinite;
+  pointer-events: none;
 }
 
 .love-heart.is-bursting .love-heart__svg {
@@ -345,7 +333,7 @@ button {
 }
 
 .home__footer {
-  z-index: 2;
+  z-index: 14;
   display: grid;
   grid-template-columns: minmax(1.5rem, 1fr) auto minmax(1.5rem, 1fr);
   align-items: center;
@@ -372,7 +360,7 @@ button {
 .love-rain {
   position: fixed;
   inset: 0;
-  z-index: 20;
+  z-index: 6;
   overflow: hidden;
   pointer-events: none;
 }
@@ -383,13 +371,13 @@ button {
   left: 0;
   margin: 0;
   white-space: nowrap;
-  color: rgba(255, 228, 235, 0.9);
+  color: rgba(255, 218, 228, 0.74);
   font-family: Georgia, "Times New Roman", serif;
   font-size: var(--size, 1rem);
   font-style: italic;
   line-height: 1;
   letter-spacing: -0.02em;
-  text-shadow: 0 0 1.3rem rgba(229, 89, 127, 0.5);
+  text-shadow: 0 0 1.1rem rgba(229, 89, 127, 0.34);
   will-change: transform, opacity;
 }
 
@@ -432,9 +420,9 @@ button {
   50% { transform: translateY(-8px) rotate(0.35deg); }
 }
 
-@keyframes breathe {
-  0%, 100% { transform: scale(0.96); }
-  50% { transform: scale(1.04); }
+@keyframes roseBreathe {
+  0%, 100% { transform: scale(0.985) rotate(-0.25deg); }
+  50% { transform: scale(1.015) rotate(0.25deg); }
 }
 
 @keyframes heartTap {
@@ -463,8 +451,8 @@ button {
   }
 
   .flower-stage {
-    width: min(108vw, 34rem);
-    margin-left: -4vw;
+    width: min(104vw, 35rem);
+    margin-left: -2vw;
   }
 
   .flower-stage__hint {
@@ -516,7 +504,7 @@ button {
   }
 
   .love-heart__svg,
-  .rose__inner,
+  .rose-photo,
   .flower-stage__halo {
     animation: none !important;
   }
